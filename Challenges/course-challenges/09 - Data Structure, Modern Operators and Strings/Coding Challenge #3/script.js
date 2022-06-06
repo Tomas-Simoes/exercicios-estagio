@@ -38,21 +38,20 @@ const gameEvents = new Map([
 ]);
 
 //? TASK 1
-const arrEvents = [...new Set(gameEvents.values())];
-console.log(arrEvents);
+const events = [...new Set(gameEvents.values())];
+console.log(events);
 
 //? TASK 2
 gameEvents.delete(64);
+console.log(gameEvents);
 
 //? TASK 3
-
 console.log(
-  `An event happened, on average, every ${
-    90 / gameEvents.size
-  } minutes" (keep in mind that a game has 90 minutes`
+  `An event happened, on average, every ${90 / gameEvents.size}  minutes`
 );
 
-for (const [time, event] of gameEvents) {
-  time <= 45 ? console.log("[FIRST HALF]") : console.log("[SECOND HALF]");
-  console.log(`${time}: ${event}`);
+//? TASK 4
+for (const [minute, event] of gameEvents.entries()) {
+  minute < 45 ? console.log("[FIRST HALF]") : console.log("[SECOND HALF]");
+  console.log(`: ${event}`);
 }
