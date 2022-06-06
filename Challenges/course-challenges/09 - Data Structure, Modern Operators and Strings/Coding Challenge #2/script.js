@@ -71,36 +71,35 @@ const game = {
   },
 };
 
-console.log(game.scored);
-
 //? TASK 1
-for (const [goalNum, player] of game.scored.entries()) {
-  console.log(`Goal ${goalNum + 1}: ${player}`);
+for (const [index, player] of game.scored.entries()) {
+  console.log(`Goal ${index + 1}: ${player}`);
 }
 
 //? TASK 2
-let avg = 0;
-console.log(Object.values(game.odds));
+const odds = Object.values(game.odds);
 
-for (const odd of Object.values(game.odds)) {
+let avg = 0;
+for (const odd of odds) {
   avg += odd;
 }
-avg /= Object.values(game.odds).length;
-console.log(avg);
+avg /= odds.length;
+console.log(`The average odd is: ${Math.round(avg)}`);
+
 //? TASK 3
 const odds2 = Object.entries(game.odds);
+console.log(odds2);
 
-for (const [oddOf, oddValue] of odds2) {
+for (const [team, odd] of odds2) {
   console.log("Odd of ");
-  oddOf === "x"
-    ? console.log(`a draw: ${oddValue}`)
-    : console.log(` ${game[oddOf]} win: ${oddValue}`);
+  team === "x"
+    ? console.log(`draw: ${odd}`)
+    : console.log(`victory ${game[team]}: ${odd}`);
 }
 
 //? TASK 4
-const scored = {};
+const scorers = {};
 for (const player of game.scored.values()) {
-  scored[player] ? scored[player]++ : (scored[player] = 1);
+  scorers[player] ? scorers[player]++ : (scorers[player] = 1);
 }
-
-console.log(scored);
+console.log(scorers);
