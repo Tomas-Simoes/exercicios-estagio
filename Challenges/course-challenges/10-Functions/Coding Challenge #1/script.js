@@ -16,7 +16,9 @@ Here are your tasks:
         3: C++
         (Write option number)
   
-  1.2. Based on the input number, update the answers array. For example, if the option is 3, increase the value AT POSITION 3 of the array by 1. Make sure to check if the input is a number and if the number makes sense (e.g answer 52 wouldn't make sense, right?)
+  1.2. Based on the input number, update the answers array. 
+  For example, if the option is 3, increase the value AT POSITION 3 of the array by 1. 
+  Make sure to check if the input is a number and if the number makes sense (e.g answer 52 wouldn't make sense, right?)
 
 2  . Call this method whenever the user clicks the "Answer poll" button.
 
@@ -41,8 +43,8 @@ GOOD LUCK 😀
 
 const poll = {
   question: "What is your favourite programming language?",
-  options: ["0: JavaScript", "1: Python", "2: Rust", "3: C++"],
-  // This generates [0, 0, 0, 0]. More in the next section 😃
+  options: ["0: Javascript", "1: Python", "2: Rust", "3: C++"],
+
   answers: new Array(4).fill(0),
 
   registerNewAnswer() {
@@ -51,22 +53,22 @@ const poll = {
     );
 
     typeof answer === "number" &&
-      answer <= this.answers.length &&
+      answer <= this.options.length &&
       this.answers[answer]++;
 
     this.displayResults();
   },
 
-  displayResults(type = "array") {
+  displayResults(type = "string") {
     type === "array"
       ? console.log(this.answers)
-      : console.log(`Poll results are ${this.answers.join(",")}`);
+      : console.log(`The poll results are: ${this.answers.join(", ")}`);
   },
 };
+
+poll.displayResults.call({ answers: [5, 2, 3] }, "array");
+poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] }, "string");
 
 document
   .querySelector(".poll")
   .addEventListener("click", poll.registerNewAnswer.bind(poll));
-
-poll.displayResults.call({ answers: [5, 2, 3] }, "array");
-poll.displayResults.call({ answers: [1, 5, 3, 9, 6, 1] }, "string");

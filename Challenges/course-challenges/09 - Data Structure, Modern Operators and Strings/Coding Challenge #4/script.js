@@ -1,7 +1,9 @@
 /* 
-Write a program that receives a list of variable names written in underscore_case and convert them to camelCase.
+Write a program that receives a list of variable names 
+written in underscore_case and convert them to camelCase.
 
-The input will come from a textarea inserted into the DOM (see code below), and conversion will happen when the button is pressed.
+The input will come from a textarea inserted into the DOM 
+(see code below), and conversion will happen when the button is pressed.
 
 THIS TEST DATA (pasted to textarea)
 underscore_case
@@ -31,13 +33,21 @@ document.body.append(document.createElement("button"));
 
 const convertToCamel = () => {
   const textToConvert = document
-    .querySelector("textarea")
+    .querySelector("textArea")
     .value.toLowerCase()
     .split("\n");
 
+  let x = 1;
+
   for (const word of textToConvert) {
-    const [first, second] = word.trim().split("_");
-    console.log(`${first}${second[0].toUpperCase() + second.slice(1)}`);
+    [firstWord, secondWord] = word.split("_");
+
+    const finalWord =
+      firstWord.trim() + secondWord[0].toUpperCase() + secondWord.slice(1);
+    finalWord;
+
+    console.log(`${finalWord.padEnd(20, " ") + "✅".repeat(x)}`);
+    x++;
   }
 };
 
