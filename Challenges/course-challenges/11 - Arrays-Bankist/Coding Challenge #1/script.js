@@ -31,19 +31,18 @@ TEST DATA 2: Julia's data [9, 16, 6, 8, 3], Kate's data [10, 5, 6, 1, 4]
 
 GOOD LUCK 😀
 */
+
 const checkDogs = (dogsJulia, dogsKate) => {
-  updatedDogsJulia = dogsJulia.slice(1, dogsJulia.length - 2);
+  correctDogsJulia = dogsJulia.slice(1, dogsJulia.length - 2);
+  correctedDogs = [...correctDogsJulia, ...dogsKate];
 
-  // const correctedDogs = [...dogsJulia, ...dogsKate];
-  const correctedDogs = updatedDogsJulia.concat(dogsKate);
-
-  correctedDogs.forEach((dog, index) => {
-    dog <= 3
-      ? console.log(`Dog number ${index + 1} is still a puppy 🐶`)
-      : console.log(
-          `Dog number ${index + 1} is an adult, and is ${dog} years old`
-        );
-  });
+  correctedDogs.forEach((age, index) =>
+    age >= 5
+      ? console.log(
+          `Dog number ${index + 1} is an adult, and is ${age} years old`
+        )
+      : console.log(`Dog number ${index + 1} is still a puppy 🐶`)
+  );
 };
 
 checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);

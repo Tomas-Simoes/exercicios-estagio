@@ -28,21 +28,12 @@ GOOD LUCK 😀
 */
 
 const calcAverageHumanAge = (ages) => {
-  const humanAges = ages.map(
-    (age) => (age <= 2 ? 2 * age : 16 + age * 4)
-    // ! With if()
-    // {
-    // if (age <= 2) return 2 * age;
-    // else return 16 + age * 4;
-    // }
-  );
+  const avgAge = ages
+    .map((age) => (age <= 2 ? 2 * age : 16 + age * 4))
+    .filter((age) => age >= 18)
+    .reduce((acc, age, index, arr) => acc + age / arr.length, 0);
 
-  const adultAges = humanAges.filter((age) => age > 18);
-
-  let avgAges = adultAges.reduce((acc, age) => acc + age, 0);
-  avgAges /= adultAges.length;
-
-  return Math.trunc(avgAges);
+  return avgAge;
 };
 
 console.log(calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]));

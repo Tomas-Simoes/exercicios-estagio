@@ -47,23 +47,7 @@ const poll = {
 
   answers: new Array(4).fill(0),
 
-  registerNewAnswer() {
-    const answer = Number(
-      prompt(`${this.question}\n${this.options.join("\n")}`)
-    );
-
-    typeof answer === "number" &&
-      answer <= this.options.length &&
-      this.answers[answer]++;
-
-    this.displayResults();
-  },
-
-  displayResults(type = "string") {
-    type === "array"
-      ? console.log(this.answers)
-      : console.log(`The poll results are: ${this.answers.join(", ")}`);
-  },
+  registerNewAnswer() {},
 };
 
 poll.displayResults.call({ answers: [5, 2, 3] }, "array");
