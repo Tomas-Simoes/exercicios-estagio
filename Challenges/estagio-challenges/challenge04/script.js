@@ -8,19 +8,6 @@ If the product on the inventory array is unique it must
 double the quantity of the product
 */
 
-// const sums = accounts.reduce(
-//   (sums, cur) => {
-//     // cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += cur);
-//     sums[cur > 0 ? "deposits" : "withdrawals"] += cur;
-//     return sums;
-//   },
-//   {
-//     deposits: 0,
-//     withdrawals: 0,
-//   }
-// );
-// console.log(sums);
-
 const inventory = [
   "grapes",
   "bananas",
@@ -58,4 +45,27 @@ newInventory.forEach((cur, index, arr) => {
   }
 });
 
+//? Other solution
+let data = inventory
+  .filter((elem, i, arr) => arr.indexOf(elem) === i)
+  .map(function (elem, mapi) {
+    const multiplier = inventory.find((unique, findex) => {
+      return unique === elem && findex != mapi;
+    })
+      ? 1
+      : 2;
+
+    return {
+      fruit: elem,
+      stock: quantity.reduce((acc, stock, idx) => {
+        if (inventory[idx] === elem && stock) {
+          return acc + quantity[idx] * multiplier;
+        } else {
+          return acc;
+        }
+      }, 0),
+    };
+  });
+
+console.log(data);
 console.log(newInventory);
