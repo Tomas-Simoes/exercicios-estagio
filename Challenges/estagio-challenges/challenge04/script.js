@@ -33,18 +33,29 @@ const inventory = [
 
 const quantity = [2, 5, 3, 4, 6, 1, 9];
 
-const inventoryCompleted = inventory.reduce((itens, cur, index) => {
-  const duplicatedIndex = itens.findIndex((object) => {
-    return object.name === cur;
-  });
+//? Gets the unique value from the inventory[] array
+const uniqueValue = inventory.reduce((acc, cur, index, arr) =>
+  acc.includes(cur) ? cur : acc
+);
 
-  duplicatedIndex + 1
-    ? (itens[duplicatedIndex].quantity += quantity[index])
-    : itens.push({ name: cur, quantity: quantity[index] });
+//? Creates the new obj array
+let newInventory = [];
 
-  return itens;
-}, []);
+inventory.forEach((cur, index, arr) => {
+  const duplicatedObj = newInventory.find((e) => e.name === cur);
 
-console.log(inventoryCompleted);
+  if (!duplicatedObj) {
+    newInventory.push({ name: cur, quantity: quantity[index] });
+  } else {
+    duplicatedObj.quantity += quantity[index];
+  }
+});
 
-//TODO If the product on the inventory array is unique it must double the quantity of the product
+//? Duplicates the quantity property of the unique value
+newInventory.forEach((cur, index, arr) => {
+  if (cur.name === uniqueValue) {
+    cur.quantity *= 2;
+  }
+});
+
+console.log(newInventory);
