@@ -70,7 +70,7 @@ const movies = [
 ];
 
 const moviesUpdated = movies.map((movie, index, arr) => {
-  const availableMovieStars = moviestars.filter((actor, indexStars, arrStars) =>
+  const availableMovieStars = moviestars.filter((actor) =>
     actor.movieType.includes(movie.movieType)
   );
 
