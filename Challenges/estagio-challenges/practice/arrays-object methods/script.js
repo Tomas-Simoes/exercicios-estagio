@@ -87,17 +87,10 @@ const moviesUpdated = movies.map((movie, index, arr) => {
     }
   }
 
-  if (indexToDelete - 1) {
-    return {
-      ...movie,
-      actors: availableMovieStars.slice(0, indexToDelete),
-    };
-  } else {
-    return {
-      ...movie,
-      actors: availableMovieStars,
-    };
-  }
+  return {
+    ...movie,
+    actors: availableMovieStars.slice(0, indexToDelete),
+  };
 });
 
 console.log(moviesUpdated);
