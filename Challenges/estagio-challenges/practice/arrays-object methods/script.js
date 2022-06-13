@@ -1,4 +1,5 @@
 "use strict";
+
 /*
 Create a list of movies that will be produced by the company. 
 For each movie it will need to appear the cast information 
@@ -12,14 +13,14 @@ cost remove the actor(s) with highest salary until it is equal or bigger
 
 3- Get all the actors that have just one movie type and that are casted 
 in at least 2 movies
-
 */
+
 const moviestars = [
   {
     name: "james",
     age: 30,
     salary: 2000,
-    movieType: ["Comedy", "Action"],
+    movieType: ["Comedy", "Action", "Terror"],
   },
   {
     name: "carl",
@@ -31,7 +32,7 @@ const moviestars = [
     name: "jonas",
     age: 70,
     salary: 13000,
-    movieType: ["Action", "Terror"],
+    movieType: ["Action", "Terror", "Fiction"],
   },
   {
     name: "john",
@@ -65,23 +66,38 @@ const movies = [
   {
     name: "F&F10",
     movieType: "Action",
-    maxBudget: 340000,
+    maxBudget: 1000,
   },
 ];
 
 const moviesUpdated = movies.map((movie, index, arr) => {
-  const availableMovieStars = moviestars.filter((actor) =>
-    actor.movieType.includes(movie.movieType)
-  );
+  const availableMovieStars = moviestars
+    .filter((actor) => actor.movieType.includes(movie.movieType))
+    .sort((a, b) => a.salary - b.salary);
 
-  while (
-    movie.maxBudget <
-    availableMovieStars.reduce((acc, cur) => (acc += cur.salary), 0)
-  ) {
-    availableMovieStars.sort((a, b) => b - a).shift();
+  let acc = 0;
+  let indexToDelete;
+
+  for (const [findex, factor] of availableMovieStars.entries()) {
+    acc += factor.salary;
+
+    if (acc > movie.maxBudget) {
+      indexToDelete = findex;
+      break;
+    }
   }
 
-  return { ...movie, actors: availableMovieStars };
+  if (indexToDelete - 1) {
+    return {
+      ...movie,
+      actors: availableMovieStars.slice(0, indexToDelete),
+    };
+  } else {
+    return {
+      ...movie,
+      actors: availableMovieStars,
+    };
+  }
 });
 
 console.log(moviesUpdated);
