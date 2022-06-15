@@ -63,17 +63,32 @@ function checkGroceries(list: product[], money: number[]) {
 
     return (acc += cur.price);
   }, 0);
-
+  console.log(totalToPay);
   if (totalMoney >= totalToPay) {
     const change = totalMoney - totalToPay;
+    let noteValues = 0;
+    let finalNote = 0;
+
+    for (const [findex, fnote] of money.entries()) {
+      noteValues += fnote;
+      if (noteValues > totalToPay) {
+        finalNote = +findex;
+        break;
+      }
+    }
+
+    console.log(finalNote);
 
     console.log(
-      `She bought everything on the list and has ${change} change and got ${
+      `She bought everything (with the notes ${money.slice(
+        0,
+        finalNote + 1
+      )}) on the list and has ${change} change and got ${
         change * 0.5
-      } for herself`
+      } for herself.`
     );
   } else {
-    let productPrices: number = 0;
+    let productPrices = 0;
     let finalProduct = 0;
 
     for (const [findex, fproduct] of Object.entries(list)) {
@@ -98,4 +113,4 @@ checkGroceries(shoppingList, banknotes);
 
 console.log(`==========`);
 
-checkGroceries(shoppingList, [50, 10, 1]);
+checkGroceries(shoppingList, [10, 16, 20]);
