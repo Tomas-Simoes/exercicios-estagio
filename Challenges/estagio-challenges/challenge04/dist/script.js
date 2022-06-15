@@ -47,11 +47,10 @@ function checkGroceries(list, money) {
     const totalMoney = money.reduce(function (acc, cur) {
         return (acc += cur);
     }, 0);
-    const totalToPay = list.reduce(function (acc, cur) {
+    const totalToPay = list.reduce(function (acc, cur, index) {
         if (cur.discount)
-            return (acc += cur.price * cur.discount);
-        else
-            return (acc += cur.price);
+            list[index].price = cur.price - cur.price * cur.discount;
+        return (acc += cur.price);
     }, 0);
     if (totalMoney >= totalToPay) {
         const change = totalMoney - totalToPay;
