@@ -14,7 +14,6 @@ cost remove the actor(s) with highest salary until it is equal or bigger
 3- Get all the actors that have just one movie type and that are casted 
 in at least 2 movies
 */
-
 const moviestars = [
   {
     name: "james",
