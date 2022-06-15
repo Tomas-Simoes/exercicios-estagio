@@ -1,74 +1,45 @@
 "use strict";
 
-const checkPerson = function (person) {
-  if (person.age >= 18 && person.hasDriversLicense) {
-    console.log(
-      `${person.firstName} ${
-        person.nationality === "Portuguese" ? "has" : "doesnt have"
-      } a portuguese drivers license`
-    );
-  } else {
-    console.log(`${person.firstName} isn't able to drive`);
+const names = ["João", "Maria", "Andreia", "Hugo", "Ana"];
+const grades = [10, 12, 8, 16, 6];
+const persons = [];
+const positives = [];
+
+let failed = 0;
+let numberOfStudents = 0;
+
+const BuildPersonsObject = () => {
+  for (let i = 0; i < names.length; i++) {
+    persons.push({
+      firstName: names[i],
+      grade: grades[i],
+    });
+
+    grades[i] >= 10 ? positives.push(names[i]) : failed++;
+
+    if (names[i].startsWith("A", 0)) numberOfStudents++;
   }
 };
 
-const checkAge = function (person) {
-  if (person.age < 10) {
-    console.log(
-      `${person.firstName}'s age is less then 10 years old (${
-        person.age
-      }) and the difference until 20 years old is ${20 - person.age}`
-    );
-  } else if (person.age >= 10 && person.age < 20) {
-    console.log(
-      `${person.firstName}'s age is between 10 and 20 years old (${
-        person.age
-      }) and the difference until 20 years old is ${20 - person.age}`
-    );
-  } else if (person.age >= 35) {
-    console.log(
-      `${person.firstName}'s age is more then 35 years old (${person.age})`
-    );
-  }
+const checkGrade = (name, grade) => {
+  if (grade < 10)
+    console.log(`${name} had ${grade}, so it was a negative result`);
+  else if (grade < 13)
+    console.log(`${name} had ${grade}, so it is a ok result`);
+  else if (grade >= 13 && grade < 16)
+    console.log(`${name} had ${grade}, so it was a good result`);
+  else if (grade >= 16 && grade < 18)
+    console.log(`${name} had ${grade}, so it is a very good result`);
+  else if (grade >= 18 && grade < 20)
+    console.log(`${name} had ${grade}, so it is an excelent result`);
 };
-//Persons
 
-const persons = [
-  {
-    firstName: "José",
-    age: 42,
-    hasDriversLicense: true,
-    nationality: "Portuguese",
-  },
-  {
-    firstName: "Mike",
-    age: 28,
-    hasDriversLicense: true,
-    nationality: "English",
-  },
-  {
-    firstName: "Maria",
-    age: 21,
-    hasDriversLicense: false,
-    nationality: "Portuguese",
-  },
-  {
-    firstName: "Manolo",
-    age: 17,
-    hasDriversLicense: true,
-    nationality: "Spanish",
-  },
-  {
-    firstName: "Hugo",
-    age: 13,
-    hasDriversLicense: false,
-    nationality: "Portuguese",
-  },
-];
+checkGrade("Martim", Math.trunc(Math.random * 21));
 
-for (let i = 0; i < persons.length; i++) {
-  checkPerson(persons[i]);
-  checkAge(persons[i]);
-
-  console.log("-------------");
-}
+BuildPersonsObject();
+console.log(persons);
+console.log("Positives: " + positives);
+console.log("Number of Students Failed:" + failed);
+console.log(
+  "Number of Stundents starting the name w/ letter A: " + numberOfStudents
+);

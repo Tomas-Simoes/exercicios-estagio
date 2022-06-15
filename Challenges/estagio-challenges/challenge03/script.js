@@ -1,44 +1,71 @@
-//without accessing the index complete the following code to make it functional
+/*The allowed array methods to this exercise are: 
+map, filter, reducer and find.
 
-const coords = [0, 2]; // this are the lat and long coordinates
-const [lat, long] = coords;
+1- build an array of objects that contains all this inventory 
+information. it must have only one entry for each product. 
 
-console.log(`The lat value is: ${lat}`); //show here only the lat
-console.log(`The long value is: ${long}`); //show here only the lat
+If the product on the inventory array is unique it must
+double the quantity of the product
+*/
 
-//Copy the following array to another array, and change any value on that new array without changing the original array
+const inventory = [
+  "grapes",
+  "bananas",
+  "peaches",
+  "bananas",
+  "apples",
+  "apples",
+  "bananas",
+];
 
-const arr = [1, 2];
-const newArr = [3, ...arr];
+const quantity = [2, 5, 3, 4, 6, 1, 9];
 
-//using to arr spread operator create a final array that is in the following format [1,5,6,2]
-const a = [1, 2];
-const b = [3, 4, 5, 6];
+//? Gets the unique value from the inventory[] array
+const uniqueValue = inventory.reduce((acc, cur, index, arr) =>
+  acc.includes(cur) ? cur : acc
+);
 
-const [value1, value2] = a;
-const [, , ...value3] = b;
+//? Creates the new obj array
+let newInventory = [];
 
-const arr2 = [value1, ...value3, value2];
+inventory.forEach((cur, index, arr) => {
+  const duplicatedObj = newInventory.find((e) => e.name === cur);
 
-//having this object find the fastest way to create an new object just changing the value of the property name
+  if (!duplicatedObj) {
+    newInventory.push({ name: cur, quantity: quantity[index] });
+  } else {
+    duplicatedObj.quantity += quantity[index];
+  }
+});
 
-const person = {
-  name: "Ana",
-  age: 18,
-  nacionality: "Portugal",
-};
+//? Duplicates the quantity property of the unique value
+newInventory.forEach((cur, index, arr) => {
+  if (cur.name === uniqueValue) {
+    cur.quantity *= 2;
+  }
+});
 
-const person2 = { ...person, name: "joana" };
+//? Other solution
+let data = inventory
+  .filter((elem, i, arr) => arr.indexOf(elem) === i)
+  .map(function (elem, mapi) {
+    const multiplier = inventory.find((unique, findex) => {
+      return unique === elem && findex != mapi;
+    })
+      ? 1
+      : 2;
 
-console.log(person);
-console.log(person2);
-// uncomment and complete the code in order to print the two messages correctly
+    return {
+      fruit: elem,
+      stock: quantity.reduce((acc, stock, idx) => {
+        if (inventory[idx] === elem && stock) {
+          return acc + quantity[idx] * multiplier;
+        } else {
+          return acc;
+        }
+      }, 0),
+    };
+  });
 
-const func = ([, second, third]) => {
-  console.log(`the second value is ${second}`);
-  console.log(`the third value is ${third}`);
-};
-
-const testArr = [1, 2, 3];
-
-func(testArr);
+console.log(data);
+console.log(newInventory);

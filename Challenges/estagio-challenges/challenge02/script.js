@@ -1,45 +1,44 @@
-"use strict";
+//without accessing the index complete the following code to make it functional
 
-const names = ["João", "Maria", "Andreia", "Hugo", "Ana"];
-const grades = [10, 12, 8, 16, 6];
-const persons = [];
-const positives = [];
+const coords = [0, 2]; // this are the lat and long coordinates
+const [lat, long] = coords;
 
-let failed = 0;
-let numberOfStudents = 0;
+console.log(`The lat value is: ${lat}`); //show here only the lat
+console.log(`The long value is: ${long}`); //show here only the lat
 
-const BuildPersonsObject = () => {
-  for (let i = 0; i < names.length; i++) {
-    persons.push({
-      firstName: names[i],
-      grade: grades[i],
-    });
+//Copy the following array to another array, and change any value on that new array without changing the original array
 
-    grades[i] >= 10 ? positives.push(names[i]) : failed++;
+const arr = [1, 2];
+const newArr = [3, ...arr];
 
-    if (names[i].startsWith("A", 0)) numberOfStudents++;
-  }
+//using to arr spread operator create a final array that is in the following format [1,5,6,2]
+const a = [1, 2];
+const b = [3, 4, 5, 6];
+
+const [value1, value2] = a;
+const [, , ...value3] = b;
+
+const arr2 = [value1, ...value3, value2];
+
+//having this object find the fastest way to create an new object just changing the value of the property name
+
+const person = {
+  name: "Ana",
+  age: 18,
+  nacionality: "Portugal",
 };
 
-const checkGrade = (name, grade) => {
-  if (grade < 10)
-    console.log(`${name} had ${grade}, so it was a negative result`);
-  else if (grade < 13)
-    console.log(`${name} had ${grade}, so it is a ok result`);
-  else if (grade >= 13 && grade < 16)
-    console.log(`${name} had ${grade}, so it was a good result`);
-  else if (grade >= 16 && grade < 18)
-    console.log(`${name} had ${grade}, so it is a very good result`);
-  else if (grade >= 18 && grade < 20)
-    console.log(`${name} had ${grade}, so it is an excelent result`);
+const person2 = { ...person, name: "joana" };
+
+console.log(person);
+console.log(person2);
+// uncomment and complete the code in order to print the two messages correctly
+
+const func = ([, second, third]) => {
+  console.log(`the second value is ${second}`);
+  console.log(`the third value is ${third}`);
 };
 
-checkGrade("Martim", Math.trunc(Math.random * 21));
+const testArr = [1, 2, 3];
 
-BuildPersonsObject();
-console.log(persons);
-console.log("Positives: " + positives);
-console.log("Number of Students Failed:" + failed);
-console.log(
-  "Number of Stundents starting the name w/ letter A: " + numberOfStudents
-);
+func(testArr);
