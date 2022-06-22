@@ -1,15 +1,21 @@
 "use strict";
-let randomNumber = Math.floor(Math.random() * 100);
+let randomNumber = Math.floor(Math.random() * 100) + 1;
 const guesses = document.getElementById("guesses");
 const lastResult = document.querySelector(".lastResult");
 const lowOrHi = document.querySelector(".lowOrHi");
 const guessSubmit = document.querySelector(".guessSubmit");
 const guessField = document.querySelector(".guessField");
 let resetButton;
-let guessesTries = 0;
+let guessesObj = {
+    Tries: 0,
+    NumberOfGamesPlayed: 0,
+    NumberOfWins: 0,
+    Guesses: [],
+};
 guesses.textContent = "Previous Guesses: ";
 const checkGuess = () => {
     const userGuess = Number(guessField.value);
+    guessesObj.Guesses.push(userGuess);
     // Writes userGuess
     guesses.textContent += userGuess + " ";
     // Check if the number is right
@@ -17,18 +23,18 @@ const checkGuess = () => {
         lastResult.textContent = "Congratulations! You got it right!";
         lastResult.style.backgroundColor = "green";
         lowOrHi.textContent = "";
-        setGameOver();
+        guessesObj.NumberOfWins++;
+        return setGameOver();
     }
-    else {
+    if (userGuess != randomNumber) {
         lastResult.textContent = "Wrong!";
         lastResult.style.backgroundColor = "red";
         lowOrHi.textContent = `Last guess was too ${userGuess < randomNumber ? "low" : "high"}!`;
-        guessesTries++;
+        guessesObj.Tries++;
         guessField.value = "";
         guessField.focus();
     }
-    console.log(guessesTries);
-    if (guessesTries === 3) {
+    if (guessesObj.Tries === 3) {
         lastResult.textContent = "!!!GAME OVER!!!";
         setGameOver();
     }
@@ -39,6 +45,8 @@ const setGameOver = () => {
     resetButton = document.createElement("button");
     resetButton.textContent = "Start new game";
     document.body.appendChild(resetButton);
+    guessesObj.NumberOfGamesPlayed++;
+    console.log(guessesObj);
     resetButton.addEventListener("click", resetGame);
 };
 const resetGame = () => {
@@ -51,9 +59,10 @@ const resetGame = () => {
     guessSubmit.disabled = false;
     guessField.value = "";
     guessField.focus();
-    guessesTries = 0;
     lastResult.style.backgroundColor = "white";
-    randomNumber = Math.floor(Math.random() * 100);
+    guessesObj.Tries = 0;
+    randomNumber = Math.floor(Math.random() * 100) + 1;
+    console.log(randomNumber);
 };
 console.log(randomNumber);
 guessSubmit.addEventListener("click", checkGuess);

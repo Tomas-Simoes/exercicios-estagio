@@ -28,6 +28,7 @@ guesses.textContent = "Previous Guesses: ";
 
 const checkGuess = () => {
   const userGuess = Number(guessField.value);
+  guessesObj.Guesses.push(userGuess);
 
   // Writes userGuess
   guesses.textContent += userGuess + " ";
@@ -37,6 +38,8 @@ const checkGuess = () => {
     lastResult.textContent = "Congratulations! You got it right!";
     lastResult.style.backgroundColor = "green";
     lowOrHi.textContent = "";
+
+    guessesObj.NumberOfWins++;
 
     return setGameOver();
   }
