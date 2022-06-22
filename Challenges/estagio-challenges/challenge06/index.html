@@ -82,8 +82,7 @@
 
         guessesObj.NumberOfWins++;
 
-        setGameOver();
-        return;
+        return setGameOver();
       }
 
       if (userGuess !== randomNumber) {
@@ -115,6 +114,8 @@
       resetButton.textContent = "Start new game";
       document.body.appendChild(resetButton);
 
+      guessesObj.NumberOfGamesPlayed++;
+
       resetButton.addEventListener("click", resetGame);
     };
 
@@ -136,7 +137,6 @@
       lastResult.style.backgroundColor = "white";
 
       guessesObj.Tries = 0;
-      guessesObj.NumberOfGamesPlayed++;
 
       randomNumber = Math.floor(Math.random() * 100) + 1;
 

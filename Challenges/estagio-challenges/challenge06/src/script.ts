@@ -1,4 +1,4 @@
-let randomNumber = Math.floor(Math.random() * 100);
+let randomNumber = Math.floor(Math.random() * 100) + 1;
 
 const guesses = document.getElementById("guesses")! as HTMLParagraphElement;
 const lastResult = document.querySelector(
@@ -9,7 +9,20 @@ const guessSubmit = document.querySelector(".guessSubmit") as HTMLInputElement;
 const guessField = document.querySelector(".guessField") as HTMLInputElement;
 
 let resetButton: HTMLButtonElement;
-let guessesTries: number = 0;
+
+interface guesses {
+  Tries: number;
+  NumberOfGamesPlayed: number;
+  NumberOfWins: number;
+  Guesses: number[];
+}
+
+let guessesObj: guesses = {
+  Tries: 0,
+  NumberOfGamesPlayed: 0,
+  NumberOfWins: 0,
+  Guesses: [],
+};
 
 guesses.textContent = "Previous Guesses: ";
 
@@ -25,8 +38,10 @@ const checkGuess = () => {
     lastResult.style.backgroundColor = "green";
     lowOrHi.textContent = "";
 
-    setGameOver();
-  } else {
+    return setGameOver();
+  }
+
+  if (userGuess != randomNumber) {
     lastResult.textContent = "Wrong!";
     lastResult.style.backgroundColor = "red";
 
@@ -34,15 +49,13 @@ const checkGuess = () => {
       userGuess < randomNumber ? "low" : "high"
     }!`;
 
-    guessesTries++;
+    guessesObj.Tries++;
 
     guessField.value = "";
     guessField.focus();
   }
 
-  console.log(guessesTries);
-
-  if (guessesTries === 3) {
+  if (guessesObj.Tries === 3) {
     lastResult.textContent = "!!!GAME OVER!!!";
     setGameOver();
   }
@@ -55,14 +68,19 @@ const setGameOver = () => {
   resetButton.textContent = "Start new game";
   document.body.appendChild(resetButton);
 
+  guessesObj.NumberOfGamesPlayed++;
+  console.log(guessesObj);
+
   resetButton.addEventListener("click", resetGame);
 };
 
 const resetGame = () => {
   const resetParas = document.querySelectorAll(".resultParas p");
+
   for (const resetPara of resetParas) {
     resetPara.textContent = "";
   }
+
   resetButton.remove();
 
   guessField.disabled = false;
@@ -71,9 +89,13 @@ const resetGame = () => {
   guessField.value = "";
   guessField.focus();
 
-  guessesTries = 0;
   lastResult.style.backgroundColor = "white";
-  randomNumber = Math.floor(Math.random() * 100);
+
+  guessesObj.Tries = 0;
+
+  randomNumber = Math.floor(Math.random() * 100) + 1;
+
+  console.log(randomNumber);
 };
 
 console.log(randomNumber);
