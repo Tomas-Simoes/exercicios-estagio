@@ -45,9 +45,9 @@
     </div>
   </body>
 
-  <script src="dist/script.js"></script>
+  <!-- <script src="dist/script.js"></script> -->
 
-  <!-- <script>
+  <script>
     "use strict";
     let randomNumber = Math.floor(Math.random() * 100);
 
@@ -58,12 +58,18 @@
     const guessField = document.querySelector(".guessField");
 
     let resetButton;
-    let guessesTries = 0;
+    let guessesObj = {
+      Tries: 0,
+      NumberOfGamesPlayed: 0,
+      NumberOfWins: 0,
+      Guesses: [],
+    };
 
     guesses.textContent = "Previous Guesses: ";
 
     const checkGuess = () => {
       const userGuess = Number(guessField.value);
+      guessesObj.Guesses.push(userGuess);
 
       // Writes userGuess
       guesses.textContent += userGuess + " ";
@@ -74,8 +80,13 @@
         lastResult.style.backgroundColor = "green";
         lowOrHi.textContent = "";
 
+        guessesObj.NumberOfWins++;
+
         setGameOver();
-      } else {
+        return;
+      }
+
+      if (userGuess !== randomNumber) {
         lastResult.textContent = "Wrong!";
         lastResult.style.backgroundColor = "red";
 
@@ -83,15 +94,15 @@
           userGuess < randomNumber ? "low" : "high"
         }!`;
 
-        guessesTries++;
+        guessesObj.Tries++;
 
         guessField.value = "";
         guessField.focus();
       }
 
-      console.log(guessesTries);
+      console.log(guessesObj.Tries);
 
-      if (guessesTries === 3) {
+      if (guessesObj.Tries === 3) {
         lastResult.textContent = "!!!GAME OVER!!!";
         setGameOver();
       }
@@ -109,9 +120,11 @@
 
     const resetGame = () => {
       const resetParas = document.querySelectorAll(".resultParas p");
+
       for (const resetPara of resetParas) {
         resetPara.textContent = "";
       }
+
       resetButton.remove();
 
       guessField.disabled = false;
@@ -120,13 +133,18 @@
       guessField.value = "";
       guessField.focus();
 
-      guessesTries = 0;
       lastResult.style.backgroundColor = "white";
-      randomNumber = Math.floor(Math.random() * 100);
+
+      guessesObj.Tries = 0;
+      guessesObj.NumberOfGamesPlayed++;
+
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+
       console.log(randomNumber);
+      console.log(guessesObj);
     };
 
     console.log(randomNumber);
     guessSubmit.addEventListener("click", checkGuess);
-  </script> -->
+  </script>
 </html>
