@@ -22,18 +22,29 @@
             <a href="#section--2" class="nav__link">Menu</a>
           </li>
 
-          <li class="nav__item">
-            <a class="nav__link nav__link--btn btn--show-modal--login" href="#">Login</a>
-          </li> 
-          
-          <li class="nav__item">
-            <a class="nav__link nav__link--btn btn--show-modal--register" href="#">Register</a>
+          <li class="nav__item hidden" id="nav--section3">
+            <a href="#section--3" class="nav__link">Schedule</a>
           </li>
 
           <li class="nav__item">
-            <a class="nav__link nav__link--btn btn--logout hidden" href="#">Log out</a>
+            <a class="nav__link nav__link--btn btn--show-modal--login" href="#"
+              >Login</a
+            >
           </li>
-         
+
+          <li class="nav__item">
+            <a
+              class="nav__link nav__link--btn btn--show-modal--register"
+              href="#"
+              >Register</a
+            >
+          </li>
+
+          <li class="nav__item">
+            <a class="nav__link nav__link--btn btn--logout hidden" href="#"
+              >Log out</a
+            >
+          </li>
         </ul>
       </nav>
 
@@ -65,24 +76,21 @@
         <h3 class="section__header">The best menu in town!!</h3>
       </div>
 
-      <div class="plates">
-        <div class="plates__row">
-          <div class="plates__name">Carbonara</div>
-          <div class="plates__info">
-            This plate is a meat plate and it's served on Thusdays
-          </div>
-          <div class="plates__value">14€</div>
-        </div>
-      </div>
+      <div class="plates"></div>
     </section>
 
     <!-- Schedule -->
     <section class="section hidden" id="section--3">
       <div class="section__title">
         <h2 class="section__description">Schedule</h2>
-        <h3 class="section__header">Come to our restaurant!!</h3>
-      </div>
+        <h3 class="section__header">Schedule in our restaurant!!</h3>
 
+        <div class="schedule"></div>
+
+        <div class="price">
+          <p class="price__label">Total to pay</p>
+          <p class="price__value price__value--in">00.00€</p>
+        </div>
       </div>
     </section>
     <!-- ////////////////////// -->

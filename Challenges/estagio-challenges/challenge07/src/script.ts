@@ -71,19 +71,31 @@ let plates = [
   },
 ];
 
+//? Interfaces
+//Order Interface
+interface order {
+  dayName: string;
+  type: string;
+  price: number;
+}
+
+// Account Interface
 interface account {
   firstName: string;
   lastName: string;
   password: string;
   email: string;
+  orders: order[];
 }
 
-let accountLogin: account | undefined;
-
-//? Plates Menu
+//? Elements
+// Containers
 const containerPlates = document.querySelector(".plates")! as HTMLDivElement;
+const containerSchedule = document.querySelector(
+  ".schedule"
+)! as HTMLDivElement;
 
-//? Login and Register Buttons
+// Login and Register Buttons
 const btnOpenLogin = document.querySelector(
   ".btn--show-modal--login"
 )! as HTMLAnchorElement;
@@ -91,7 +103,7 @@ const btnOpenRegister = document.querySelector(
   ".btn--show-modal--register"
 )! as HTMLAnchorElement;
 
-//? Modals
+// Modals
 const modalLogin = document.querySelector(".modal--login")!;
 const modalRegister = document.querySelector(".modal--register")!;
 
@@ -101,25 +113,26 @@ const btnRegister = document.querySelector(".btn--register")!;
 const btnLogin = document.querySelector(".btn--login")!;
 const btnLogout = document.querySelector(".btn--logout");
 
-//? General Elements
-const section3 = document.getElementById("section--3")!;
+// General Elements
+const navSection3 = document.getElementById("nav--section3")!;
 const welcomeMessage = document.querySelector(".nav__welcome")!;
+
+// Schedule Section
+const section3 = document.getElementById("section--3")!;
+
+const scheduleDaysOfWeek = document.getElementsByName(
+  "checkbox-schedule"
+)! as NodeListOf<HTMLInputElement>;
+
 ///////////////////////////////
 ///////////////////////////////
-//? Modal
-const resetModal = () => {
+//? Functions
+
+//? Modal function
+const resetModal = () =>
   document.querySelectorAll("input").forEach((input) => (input.value = ""));
-  // document.querySelector(".modal__error--message")?.classList.add("hidden");
-};
 
 //? Register/Login Account
-// Get all Accounts stored localy
-const getLocalAccounts = () => {
-  if (localStorage.getItem("allAccounts"))
-    return JSON.parse(localStorage.getItem("allAccounts")!);
-  else return [];
-};
-
 // Register Function
 const registerAccount = () => {
   const email = document.querySelector(".register__email")! as HTMLInputElement;
@@ -139,6 +152,7 @@ const registerAccount = () => {
     lastName: lastName.value,
     password: password.value,
     email: email.value,
+    orders: [],
   };
 
   const allAccounts: account[] = getLocalAccounts();
@@ -153,7 +167,6 @@ const registerAccount = () => {
   modalRegister.classList.add("hidden");
   resetModal();
 };
-
 // Login Function
 const loginAccount = () => {
   const email = document.querySelector(".login__email")! as HTMLInputElement;
@@ -162,15 +175,12 @@ const loginAccount = () => {
   )! as HTMLInputElement;
 
   const allAccounts: account[] = getLocalAccounts();
-  accountLogin = allAccounts.find((acc) => acc.email === email.value);
-
-  console.log(accountLogin);
-  console.log(password.value);
+  let accountLogin = allAccounts.find((acc) => acc.email === email.value);
 
   if (accountLogin && accountLogin.password === password.value) {
     localStorage.setItem("accountLogged", JSON.stringify(accountLogin));
 
-    displayLogedInfo();
+    displayLoggedInfo(accountLogin);
   } else {
     alert("This account doesn't exist");
   }
@@ -178,18 +188,28 @@ const loginAccount = () => {
   modalLogin.classList.add("hidden");
   resetModal();
 };
-
 // Logout Function
-const logoutAccount = () => {}; //TODO Logout Function
+const logoutAccount = () => {
+  welcomeMessage.textContent = `Welcome to our restaurant     |`;
 
-//? General Functions
-// Writes the plates to the menu
+  section3.classList.add("hidden");
+  navSection3.classList.add("hidden");
+
+  btnOpenLogin.classList.remove("hidden");
+  btnLogout?.classList.add("hidden");
+
+  localStorage.setItem("accountLogged", "");
+};
+
+//? Display Functions
+// Display the menu
 const displayPlates = () => {
   for (const plate of plates) {
     const insertHTML = `<div class="plates__row">
                         <div class="plates__name">${plate.Name}</div>
                         <div class="plates__info">
-                          This plate is a ${plate.Type} plate and it's served on ${plate.Day}
+                          This plate is a <strong>${plate.Type}</strong> plate and it's
+                          served on <strong>${plate.Day}</strong>
                         </div>
                         <div class="plates__value">${plate.Price}€</div>
                       </div>`;
@@ -197,19 +217,130 @@ const displayPlates = () => {
     containerPlates.insertAdjacentHTML("beforeend", insertHTML);
   }
 };
-
-// Writes all the info needed when you login
-const displayLogedInfo = () => {
-  welcomeMessage.textContent = `Welcome to our restaurant ${
-    accountLogin!.firstName
-  }    |`;
+// Display logged info
+const displayLoggedInfo = (accountLogged: account) => {
+  welcomeMessage.textContent = `Welcome to our restaurant ${accountLogged.firstName}    |`;
 
   section3.classList.remove("hidden");
+  navSection3.classList.remove("hidden");
+
   btnOpenLogin.classList.add("hidden");
   btnLogout?.classList.remove("hidden");
+
+  accountLogged.orders.forEach((order: order) => {
+    const checkBox = document.querySelector(
+      `.${order.dayName}`
+    )! as HTMLInputElement;
+
+    const radioBox = document.getElementById(
+      `radio-${order.type}-${order.dayName}`
+    )! as HTMLInputElement;
+
+    radioBox.checked = true;
+    checkBox.checked = true;
+  });
+
+  updatePrice(accountLogged);
 };
 
-//? Events
+// Display Schedule
+const displaySchedule = () => {
+  const openDays = [...new Set(plates.map((plate) => plate.Day))];
+  console.log(openDays);
+  for (const day of openDays) {
+    const insertHTML = `<div class="plates__row">
+                          <div class="plates__name">${day}</div>
+                          <div class="plates__info">
+                            Meat &emsp; <input type="radio" id='radio-Meat-${day}' name="select-${day}"  value='meat' checked onclick='updateOrder("${day}")'/>
+                            <br>
+                            Fish &emsp;&ensp;<input type="radio" id='radio-Fish-${day}' name="select-${day}" value='fish'" onclick='updateOrder("${day}")'/>
+                          </div>
+                          <div class="plates__value">
+                            Check day -
+                            <input type="checkbox" name="checkbox-schedule" class='${day}' value='${day}' onclick='updateOrder("${day}")'/>
+                          </div>
+                        </div>`;
+
+    containerSchedule.insertAdjacentHTML("beforeend", insertHTML);
+  }
+};
+// Display/Updates the orders
+const updateOrder = (orderDay: string) => {
+  const checkBox = document.querySelector(`.${orderDay}`)! as HTMLInputElement;
+  let accountLogged = JSON.parse(localStorage.getItem("accountLogged")!);
+
+  const radioMeat = document.getElementById(
+    `radio-Meat-${orderDay}`
+  )! as HTMLInputElement;
+  const type = radioMeat.checked ? "Meat" : "Fish";
+
+  let orderPrice;
+  plates.forEach((plate) => {
+    if (plate.Day === orderDay && plate.Type === type) {
+      orderPrice = plate.Price;
+    }
+  });
+
+  if (checkBox.checked) {
+    //? if it's checked, see if there is already an order in that day
+    const orderToUpdate = accountLogged.orders.find(
+      (order: order) => order.dayName === orderDay
+    );
+
+    //? if there is, change the type
+    //? if there isn't an order in that day, push a new order
+
+    if (!orderToUpdate) {
+      accountLogged.orders.push({
+        dayName: orderDay,
+        type: type,
+        price: orderPrice,
+      });
+    } else {
+      orderToUpdate.type = type;
+      orderToUpdate.price = orderPrice;
+    }
+  } else {
+    //? if checkbox is not checked, then remove that order
+    accountLogged.orders = accountLogged.orders.filter((order: order) => {
+      return order.dayName !== orderDay;
+    });
+  }
+
+  const allAccounts = getLocalAccounts();
+
+  allAccounts.forEach((account: account) => {
+    if (account.email === accountLogged.email) {
+      account.orders = accountLogged.orders;
+    }
+  });
+
+  updatePrice(accountLogged);
+
+  localStorage.setItem("accountLogged", JSON.stringify(accountLogged));
+  localStorage.setItem("allAccounts", JSON.stringify(allAccounts));
+};
+
+// Display/Updates the price
+const updatePrice = (accountLogged: account) => {
+  const priceEl = document.querySelector(
+    ".price__value"
+  )! as HTMLParagraphElement;
+
+  priceEl.textContent = accountLogged.orders
+    .reduce((acc: number, cur: order) => (acc += cur.price), 0)
+    .toString();
+};
+
+//? General Functions
+// Get all Accounts stored localy
+const getLocalAccounts = () => {
+  if (localStorage.getItem("allAccounts"))
+    return JSON.parse(localStorage.getItem("allAccounts")!);
+  else return [];
+};
+
+//? Event Calls
 btnCloseModal.forEach((btn) =>
   btn.addEventListener("click", function () {
     btn.parentElement?.classList.add("hidden");
@@ -230,3 +361,7 @@ btnLogout?.addEventListener("click", logoutAccount);
 
 //? Function calls
 displayPlates();
+displaySchedule();
+
+if (localStorage.getItem("accountLogged"))
+  displayLoggedInfo(JSON.parse(localStorage.getItem("accountLogged")!));

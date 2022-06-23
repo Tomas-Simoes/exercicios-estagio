@@ -1,3 +1,11 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:400,500,600,700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lato", sans-serif;
+}
+
 :root {
   --color-primary: #37d6b4;
 }
@@ -243,7 +251,7 @@ h4 {
 /* Menu */
 .plates {
   grid-row: 2 / span 3;
-  background-color: #fff;
+  background-color: rgb(240, 240, 240);
   border-radius: 1rem;
   overflow: scroll;
 }
@@ -252,7 +260,7 @@ h4 {
   padding: 2.25rem 4rem;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgb(195, 195, 195);
 }
 
 .plates__name {
@@ -263,7 +271,7 @@ h4 {
   padding: 0.1rem 1rem;
   border-radius: 10rem;
   margin-right: 2rem;
-  background-image: linear-gradient(to top left, #39b385, #9be15d);
+  background-image: linear-gradient(to top left, var(--color-primary), #00a693);
 }
 
 .plates__info {
@@ -276,4 +284,30 @@ h4 {
 .plates__value {
   font-size: 1.7rem;
   margin-left: auto;
+}
+
+/* Schedule */
+/* price */
+.price {
+  grid-row: 5 / 6;
+  display: flex;
+  align-items: baseline;
+  padding: 0 0.3rem;
+  margin-top: 1rem;
+}
+
+.price__label {
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-right: 0.8rem;
+}
+
+.price__value {
+  font-size: 2.2rem;
+  margin-right: 2.5rem;
+}
+
+.price__value--in {
+  color: var(--color-primary);
 }
