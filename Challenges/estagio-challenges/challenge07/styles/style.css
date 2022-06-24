@@ -316,3 +316,8 @@ h4 {
   z-index: 100;
   transition: all 0.5s;
 }
+
+.img {
+  width: 100px;
+  padding: 10px;
+}

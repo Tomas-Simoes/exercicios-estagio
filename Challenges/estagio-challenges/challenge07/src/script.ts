@@ -99,7 +99,6 @@ let plates: plate[] = [
 
 //? Elements
 // Containers
-const containerPlates = document.querySelector(".plates")! as HTMLDivElement;
 
 // Login and Register Buttons
 const btnOpenLogin = document.querySelector(
@@ -118,11 +117,6 @@ const btnCloseModal = document.querySelectorAll(".btn--close-modal")!;
 const btnRegister = document.querySelector(".btn--register")!;
 const btnLogin = document.querySelector(".btn--login")!;
 const btnLogout = document.querySelector(".btn--logout");
-
-// Schedule Section
-const scheduleDaysOfWeek = document.getElementsByName(
-  "checkbox-schedule"
-)! as NodeListOf<HTMLInputElement>;
 
 // General Elements
 const overlay = document.querySelector(".overlay")!;
@@ -205,8 +199,12 @@ const logoutAccount = () => {
 //? Display Functions
 // Display the menu
 const displayPlates = () => {
+  const containerPlates = document.querySelector(".plates")! as HTMLDivElement;
+
   for (const plate of plates) {
     const insertHTML = `<div class="plates__row">
+                        <img class="img" src="${plate.img}">
+                    
                         <div class="plates__name">${plate.Name}</div>
                         <div class="plates__info">
                           This plate is a <strong>${plate.Type}</strong> plate and it's

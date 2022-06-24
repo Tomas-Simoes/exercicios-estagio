@@ -71,7 +71,6 @@ let plates = [
         img: "https://cdn.pixabay.com/photo/2018/01/01/17/57/fish-soup-3054627_960_720.jpg",
     },
 ];
-const containerPlates = document.querySelector(".plates");
 const btnOpenLogin = document.querySelector(".btn--show-modal--login");
 const btnOpenRegister = document.querySelector(".btn--show-modal--register");
 const modalLogin = document.querySelector(".modal--login");
@@ -80,7 +79,6 @@ const btnCloseModal = document.querySelectorAll(".btn--close-modal");
 const btnRegister = document.querySelector(".btn--register");
 const btnLogin = document.querySelector(".btn--login");
 const btnLogout = document.querySelector(".btn--logout");
-const scheduleDaysOfWeek = document.getElementsByName("checkbox-schedule");
 const overlay = document.querySelector(".overlay");
 const resetModal = () => {
     overlay.classList.add("hidden");
@@ -130,8 +128,11 @@ const logoutAccount = () => {
     localStorage.setItem("accountLogged", "");
 };
 const displayPlates = () => {
+    const containerPlates = document.querySelector(".plates");
     for (const plate of plates) {
         const insertHTML = `<div class="plates__row">
+                        <img class="img" src="${plate.img}">
+                    
                         <div class="plates__name">${plate.Name}</div>
                         <div class="plates__info">
                           This plate is a <strong>${plate.Type}</strong> plate and it's
