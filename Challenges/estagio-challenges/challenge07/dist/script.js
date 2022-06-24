@@ -72,7 +72,6 @@ let plates = [
     },
 ];
 const containerPlates = document.querySelector(".plates");
-const containerSchedule = document.querySelector(".schedule");
 const btnOpenLogin = document.querySelector(".btn--show-modal--login");
 const btnOpenRegister = document.querySelector(".btn--show-modal--register");
 const modalLogin = document.querySelector(".modal--login");
@@ -81,11 +80,13 @@ const btnCloseModal = document.querySelectorAll(".btn--close-modal");
 const btnRegister = document.querySelector(".btn--register");
 const btnLogin = document.querySelector(".btn--login");
 const btnLogout = document.querySelector(".btn--logout");
-const navSection3 = document.getElementById("nav--section3");
-const welcomeMessage = document.querySelector(".nav__welcome");
-const section3 = document.getElementById("section--3");
 const scheduleDaysOfWeek = document.getElementsByName("checkbox-schedule");
-const resetModal = () => document.querySelectorAll("input").forEach((input) => (input.value = ""));
+const overlay = document.querySelector(".overlay");
+const resetModal = () => {
+    overlay.classList.add("hidden");
+    const inputs = document.querySelectorAll(".input");
+    inputs.forEach((input) => (input.value = ""));
+};
 const registerAccount = () => {
     const email = document.querySelector(".register__email");
     const firstName = document.querySelector(".register__firstName");
@@ -125,11 +126,7 @@ const loginAccount = () => {
     resetModal();
 };
 const logoutAccount = () => {
-    welcomeMessage.textContent = `Welcome to our restaurant     |`;
-    section3.classList.add("hidden");
-    navSection3.classList.add("hidden");
-    btnOpenLogin.classList.remove("hidden");
-    btnLogout === null || btnLogout === void 0 ? void 0 : btnLogout.classList.add("hidden");
+    toogleHidden(true);
     localStorage.setItem("accountLogged", "");
 };
 const displayPlates = () => {
@@ -146,11 +143,8 @@ const displayPlates = () => {
     }
 };
 const displayLoggedInfo = (accountLogged) => {
-    welcomeMessage.textContent = `Welcome to our restaurant ${accountLogged.firstName}    |`;
-    section3.classList.remove("hidden");
-    navSection3.classList.remove("hidden");
-    btnOpenLogin.classList.add("hidden");
-    btnLogout === null || btnLogout === void 0 ? void 0 : btnLogout.classList.remove("hidden");
+    displaySchedule();
+    toogleHidden(false, accountLogged);
     accountLogged.orders.forEach((order) => {
         const checkBox = document.querySelector(`.${order.dayName}`);
         const radioBox = document.getElementById(`radio-${order.type}-${order.dayName}`);
@@ -161,34 +155,45 @@ const displayLoggedInfo = (accountLogged) => {
 };
 const displaySchedule = () => {
     const openDays = [...new Set(plates.map((plate) => plate.Day))];
-    console.log(openDays);
-    for (const day of openDays) {
-        const insertHTML = `<div class="plates__row">
+    const containerSchedule = document.querySelector(".schedule");
+    if (containerSchedule.textContent === "") {
+        for (const day of openDays) {
+            const insertHTML = `<div class="plates__row">
                           <div class="plates__name">${day}</div>
                           <div class="plates__info">
                             Meat &emsp; <input type="radio" id='radio-Meat-${day}' name="select-${day}"  value='meat' checked onclick='updateOrder("${day}")'/>
                             <br>
-                            Fish &emsp;&ensp;<input type="radio" id='radio-Fish-${day}' name="select-${day}" value='fish'" onclick='updateOrder("${day}")'/>
+                            Fish &emsp;&ensp;<input type="radio"  id='radio-Fish-${day}' name="select-${day}" value='fish'" onclick='updateOrder("${day}")'/>
                           </div>
                           <div class="plates__value">
                             Check day -
                             <input type="checkbox" name="checkbox-schedule" class='${day}' value='${day}' onclick='updateOrder("${day}")'/>
                           </div>
                         </div>`;
-        containerSchedule.insertAdjacentHTML("beforeend", insertHTML);
+            containerSchedule.insertAdjacentHTML("beforeend", insertHTML);
+        }
+    }
+    else {
+        const allCheckbox = document.querySelectorAll('input[type="checkBox"]');
+        const allRadio = document.querySelectorAll('input[type="radio"]');
+        allCheckbox.forEach((checkBox) => (checkBox.checked = false));
+        allRadio.forEach((radio) => {
+            console.log(radio.value);
+            if (radio.value !== "meat")
+                radio.checked = false;
+            else
+                radio.checked = true;
+            console.log(radio.checked);
+        });
     }
 };
 const updateOrder = (orderDay) => {
+    var _a;
     const checkBox = document.querySelector(`.${orderDay}`);
     let accountLogged = JSON.parse(localStorage.getItem("accountLogged"));
     const radioMeat = document.getElementById(`radio-Meat-${orderDay}`);
     const type = radioMeat.checked ? "Meat" : "Fish";
-    let orderPrice;
-    plates.forEach((plate) => {
-        if (plate.Day === orderDay && plate.Type === type) {
-            orderPrice = plate.Price;
-        }
-    });
+    let orderPrice = (_a = plates.find((plate) => plate.Day === orderDay && plate.Type === type)) === null || _a === void 0 ? void 0 : _a.Price;
     if (checkBox.checked) {
         const orderToUpdate = accountLogged.orders.find((order) => order.dayName === orderDay);
         if (!orderToUpdate) {
@@ -204,16 +209,10 @@ const updateOrder = (orderDay) => {
         }
     }
     else {
-        accountLogged.orders = accountLogged.orders.filter((order) => {
-            return order.dayName !== orderDay;
-        });
+        accountLogged.orders = accountLogged.orders.filter((order) => order.dayName !== orderDay);
     }
     const allAccounts = getLocalAccounts();
-    allAccounts.forEach((account) => {
-        if (account.email === accountLogged.email) {
-            account.orders = accountLogged.orders;
-        }
-    });
+    allAccounts.find((account) => account.email === accountLogged.email).orders = accountLogged.orders;
     updatePrice(accountLogged);
     localStorage.setItem("accountLogged", JSON.stringify(accountLogged));
     localStorage.setItem("allAccounts", JSON.stringify(allAccounts));
@@ -227,21 +226,47 @@ const updatePrice = (accountLogged) => {
 const getLocalAccounts = () => {
     if (localStorage.getItem("allAccounts"))
         return JSON.parse(localStorage.getItem("allAccounts"));
-    else
-        return [];
+    return [];
 };
-btnCloseModal.forEach((btn) => btn.addEventListener("click", function () {
-    var _a;
-    (_a = btn.parentElement) === null || _a === void 0 ? void 0 : _a.classList.add("hidden");
-    resetModal();
-}));
-btnOpenRegister.addEventListener("click", () => modalRegister.classList.remove("hidden"));
-btnOpenLogin.addEventListener("click", () => modalLogin.classList.remove("hidden"));
+const toogleHidden = (toogle, accountLogged) => {
+    const welcomeMessage = document.querySelector(".nav__welcome");
+    const section3 = document.getElementById("section--3");
+    const navSection3 = document.getElementById("nav--section3");
+    console.log(document.body);
+    if (toogle) {
+        welcomeMessage.textContent = `Welcome to our restaurant     |`;
+        section3.classList.add("hidden");
+        navSection3.classList.add("hidden");
+        btnOpenLogin.classList.remove("hidden");
+        btnLogout === null || btnLogout === void 0 ? void 0 : btnLogout.classList.add("hidden");
+    }
+    else {
+        welcomeMessage.textContent = `Welcome to our restaurant ${accountLogged.firstName}    |`;
+        section3.classList.remove("hidden");
+        navSection3.classList.remove("hidden");
+        btnOpenLogin.classList.add("hidden");
+        btnLogout === null || btnLogout === void 0 ? void 0 : btnLogout.classList.remove("hidden");
+    }
+};
+btnCloseModal.forEach((btn) => {
+    btn.addEventListener("click", function () {
+        var _a;
+        (_a = btn.parentElement) === null || _a === void 0 ? void 0 : _a.classList.add("hidden");
+        resetModal();
+    });
+});
+btnOpenRegister.addEventListener("click", () => {
+    modalRegister.classList.remove("hidden");
+    overlay === null || overlay === void 0 ? void 0 : overlay.classList.remove("hidden");
+});
+btnOpenLogin.addEventListener("click", () => {
+    modalLogin.classList.remove("hidden");
+    overlay === null || overlay === void 0 ? void 0 : overlay.classList.remove("hidden");
+});
 btnRegister.addEventListener("click", registerAccount);
 btnLogin.addEventListener("click", loginAccount);
 btnLogout === null || btnLogout === void 0 ? void 0 : btnLogout.addEventListener("click", logoutAccount);
 displayPlates();
-displaySchedule();
 if (localStorage.getItem("accountLogged"))
     displayLoggedInfo(JSON.parse(localStorage.getItem("accountLogged")));
 //# sourceMappingURL=script.js.map

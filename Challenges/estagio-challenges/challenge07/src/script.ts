@@ -1,4 +1,30 @@
-let plates = [
+//? Interfaces
+//Order Interface
+interface order {
+  dayName: string;
+  type: string;
+  price: number;
+}
+
+// Account Interface
+interface account {
+  firstName: string;
+  lastName: string;
+  password: string;
+  email: string;
+  orders: order[];
+}
+
+// Plate Interface
+interface plate {
+  Name: string;
+  Day: string;
+  Type: string;
+  Price: number;
+  img: string;
+}
+
+let plates: plate[] = [
   {
     Name: "Salmon",
     Day: "Monday",
@@ -71,29 +97,9 @@ let plates = [
   },
 ];
 
-//? Interfaces
-//Order Interface
-interface order {
-  dayName: string;
-  type: string;
-  price: number;
-}
-
-// Account Interface
-interface account {
-  firstName: string;
-  lastName: string;
-  password: string;
-  email: string;
-  orders: order[];
-}
-
 //? Elements
 // Containers
 const containerPlates = document.querySelector(".plates")! as HTMLDivElement;
-const containerSchedule = document.querySelector(
-  ".schedule"
-)! as HTMLDivElement;
 
 // Login and Register Buttons
 const btnOpenLogin = document.querySelector(
@@ -113,24 +119,26 @@ const btnRegister = document.querySelector(".btn--register")!;
 const btnLogin = document.querySelector(".btn--login")!;
 const btnLogout = document.querySelector(".btn--logout");
 
-// General Elements
-const navSection3 = document.getElementById("nav--section3")!;
-const welcomeMessage = document.querySelector(".nav__welcome")!;
-
 // Schedule Section
-const section3 = document.getElementById("section--3")!;
-
 const scheduleDaysOfWeek = document.getElementsByName(
   "checkbox-schedule"
 )! as NodeListOf<HTMLInputElement>;
+
+// General Elements
+const overlay = document.querySelector(".overlay")!;
 
 ///////////////////////////////
 ///////////////////////////////
 //? Functions
 
 //? Modal function
-const resetModal = () =>
-  document.querySelectorAll("input").forEach((input) => (input.value = ""));
+const resetModal = () => {
+  overlay.classList.add("hidden");
+  const inputs = document.querySelectorAll(
+    ".input"
+  )! as NodeListOf<HTMLInputElement>;
+  inputs.forEach((input) => (input.value = ""));
+};
 
 //? Register/Login Account
 // Register Function
@@ -190,14 +198,7 @@ const loginAccount = () => {
 };
 // Logout Function
 const logoutAccount = () => {
-  welcomeMessage.textContent = `Welcome to our restaurant     |`;
-
-  section3.classList.add("hidden");
-  navSection3.classList.add("hidden");
-
-  btnOpenLogin.classList.remove("hidden");
-  btnLogout?.classList.add("hidden");
-
+  toogleHidden(true);
   localStorage.setItem("accountLogged", "");
 };
 
@@ -219,13 +220,8 @@ const displayPlates = () => {
 };
 // Display logged info
 const displayLoggedInfo = (accountLogged: account) => {
-  welcomeMessage.textContent = `Welcome to our restaurant ${accountLogged.firstName}    |`;
-
-  section3.classList.remove("hidden");
-  navSection3.classList.remove("hidden");
-
-  btnOpenLogin.classList.add("hidden");
-  btnLogout?.classList.remove("hidden");
+  displaySchedule();
+  toogleHidden(false, accountLogged);
 
   accountLogged.orders.forEach((order: order) => {
     const checkBox = document.querySelector(
@@ -246,14 +242,19 @@ const displayLoggedInfo = (accountLogged: account) => {
 // Display Schedule
 const displaySchedule = () => {
   const openDays = [...new Set(plates.map((plate) => plate.Day))];
-  console.log(openDays);
-  for (const day of openDays) {
-    const insertHTML = `<div class="plates__row">
+
+  const containerSchedule = document.querySelector(
+    ".schedule"
+  )! as HTMLDivElement;
+
+  if (containerSchedule.textContent === "") {
+    for (const day of openDays) {
+      const insertHTML = `<div class="plates__row">
                           <div class="plates__name">${day}</div>
                           <div class="plates__info">
                             Meat &emsp; <input type="radio" id='radio-Meat-${day}' name="select-${day}"  value='meat' checked onclick='updateOrder("${day}")'/>
                             <br>
-                            Fish &emsp;&ensp;<input type="radio" id='radio-Fish-${day}' name="select-${day}" value='fish'" onclick='updateOrder("${day}")'/>
+                            Fish &emsp;&ensp;<input type="radio"  id='radio-Fish-${day}' name="select-${day}" value='fish'" onclick='updateOrder("${day}")'/>
                           </div>
                           <div class="plates__value">
                             Check day -
@@ -261,7 +262,26 @@ const displaySchedule = () => {
                           </div>
                         </div>`;
 
-    containerSchedule.insertAdjacentHTML("beforeend", insertHTML);
+      containerSchedule.insertAdjacentHTML("beforeend", insertHTML);
+    }
+  } else {
+    const allCheckbox = document.querySelectorAll(
+      'input[type="checkBox"]'
+    )! as NodeListOf<HTMLInputElement>;
+
+    const allRadio = document.querySelectorAll(
+      'input[type="radio"]'
+    )! as NodeListOf<HTMLInputElement>;
+
+    allCheckbox.forEach((checkBox) => (checkBox.checked = false));
+    allRadio.forEach((radio) => {
+      console.log(radio.value);
+
+      if (radio.value !== "meat") radio.checked = false;
+      else radio.checked = true;
+
+      console.log(radio.checked);
+    });
   }
 };
 // Display/Updates the orders
@@ -274,12 +294,9 @@ const updateOrder = (orderDay: string) => {
   )! as HTMLInputElement;
   const type = radioMeat.checked ? "Meat" : "Fish";
 
-  let orderPrice;
-  plates.forEach((plate) => {
-    if (plate.Day === orderDay && plate.Type === type) {
-      orderPrice = plate.Price;
-    }
-  });
+  let orderPrice = plates.find(
+    (plate) => plate.Day === orderDay && plate.Type === type
+  )?.Price;
 
   if (checkBox.checked) {
     //? if it's checked, see if there is already an order in that day
@@ -302,18 +319,16 @@ const updateOrder = (orderDay: string) => {
     }
   } else {
     //? if checkbox is not checked, then remove that order
-    accountLogged.orders = accountLogged.orders.filter((order: order) => {
-      return order.dayName !== orderDay;
-    });
+    accountLogged.orders = accountLogged.orders.filter(
+      (order: order) => order.dayName !== orderDay
+    );
   }
 
   const allAccounts = getLocalAccounts();
 
-  allAccounts.forEach((account: account) => {
-    if (account.email === accountLogged.email) {
-      account.orders = accountLogged.orders;
-    }
-  });
+  allAccounts.find(
+    (account: account) => account.email === accountLogged.email
+  ).orders = accountLogged.orders;
 
   updatePrice(accountLogged);
 
@@ -337,23 +352,58 @@ const updatePrice = (accountLogged: account) => {
 const getLocalAccounts = () => {
   if (localStorage.getItem("allAccounts"))
     return JSON.parse(localStorage.getItem("allAccounts")!);
-  else return [];
+
+  return [];
+};
+
+// Toogle hidden
+const toogleHidden = (toogle: boolean, accountLogged?: account) => {
+  const welcomeMessage = document.querySelector(".nav__welcome")!;
+  const section3 = document.getElementById("section--3")!;
+  const navSection3 = document.getElementById("nav--section3")!;
+
+  console.log(document.body);
+
+  if (toogle) {
+    welcomeMessage.textContent = `Welcome to our restaurant     |`;
+
+    section3.classList.add("hidden");
+    navSection3.classList.add("hidden");
+
+    btnOpenLogin.classList.remove("hidden");
+    btnLogout?.classList.add("hidden");
+  } else {
+    welcomeMessage.textContent = `Welcome to our restaurant ${
+      accountLogged!.firstName
+    }    |`;
+
+    section3.classList.remove("hidden");
+    navSection3.classList.remove("hidden");
+
+    btnOpenLogin.classList.add("hidden");
+    btnLogout?.classList.remove("hidden");
+  }
 };
 
 //? Event Calls
-btnCloseModal.forEach((btn) =>
+btnCloseModal.forEach((btn) => {
   btn.addEventListener("click", function () {
     btn.parentElement?.classList.add("hidden");
-    resetModal();
-  })
-);
 
-btnOpenRegister.addEventListener("click", () =>
-  modalRegister.classList.remove("hidden")
-);
-btnOpenLogin.addEventListener("click", () =>
-  modalLogin.classList.remove("hidden")
-);
+    resetModal();
+  });
+});
+
+btnOpenRegister.addEventListener("click", () => {
+  modalRegister.classList.remove("hidden");
+
+  overlay?.classList.remove("hidden");
+});
+
+btnOpenLogin.addEventListener("click", () => {
+  modalLogin.classList.remove("hidden");
+  overlay?.classList.remove("hidden");
+});
 
 btnRegister.addEventListener("click", registerAccount);
 btnLogin.addEventListener("click", loginAccount);
@@ -361,7 +411,6 @@ btnLogout?.addEventListener("click", logoutAccount);
 
 //? Function calls
 displayPlates();
-displaySchedule();
 
 if (localStorage.getItem("accountLogged"))
   displayLoggedInfo(JSON.parse(localStorage.getItem("accountLogged")!));

@@ -102,7 +102,7 @@
     <div class="modal modal--register hidden">
       <button class="btn--close-modal">&times;</button>
       <h2 class="modal__header">Register in our restaurant</h2>
-      <form class="modal__form">
+      <div class="modal__form">
         <label>First Name</label>
         <input type="text" class="input register__firstName" />
         <label>Last Name</label>
@@ -113,21 +113,23 @@
         <input type="email" class="input register__email" />
 
         <button class="btn btn--register">Create Account &rarr;</button>
-      </form>
+      </div>
     </div>
 
     <!-- Login -->
     <div class="modal modal--login hidden">
       <button class="btn--close-modal">&times;</button>
       <h2 class="modal__header">Login in your account</h2>
-      <form class="modal__form">
+      <div class="modal__form">
         <label>Email Address</label>
         <input type="email" class="input login__email" />
         <label>Password</label>
         <input type="password" class="input login__password" />
         <button class="btn btn--login">Login &rarr;</button>
-      </form>
+      </div>
     </div>
+
+    <div class="overlay hidden"></div>
     <script src="dist/script.js"></script>
   </body>
 </html>
